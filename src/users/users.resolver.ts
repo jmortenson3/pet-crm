@@ -8,7 +8,7 @@ import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  //@UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Query(returns => User, { name: 'users' })
   async getUser(@Args('username', { type: () => String }) username: string) {
     return await this.usersService.findOne(username);
