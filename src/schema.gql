@@ -11,6 +11,17 @@ type User {
   email: String!
   firstName: String
   lastName: String
+  pets: [Pet!]!
+}
+
+type Pet {
+  createdDate: String!
+  createdBy: String!
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  userId: String!
+  name: String!
 }
 
 type Organization {
@@ -34,7 +45,8 @@ type Location {
 }
 
 type Query {
-  users(username: String!): User!
+  allUsers: [User!]!
+  user(username: String!): User!
   allOrganizations: [Organization!]!
   organization(input: GetOrganizationByIdInput!): Organization!
 }
@@ -46,9 +58,15 @@ input GetOrganizationByIdInput {
 type Mutation {
   signup(password: String!, username: String!): User!
   login(password: String!, username: String!): User!
+  createPet(input: CreatePetInput!): Pet!
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   createLocation(input: CreateLocationInput!): Location!
+}
+
+input CreatePetInput {
+  name: String!
+  userId: String!
 }
 
 input CreateOrganizationInput {
