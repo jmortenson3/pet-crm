@@ -24,12 +24,20 @@ type Organization {
 
 type Query {
   users(username: String!): User!
-  organizations: [Organization!]!
-  organization(id: String!): Organization!
+  allOrganizations: [Organization!]!
+  organization(input: GetOrganizationByIdInput!): Organization!
+}
+
+input GetOrganizationByIdInput {
+  id: String!
 }
 
 type Mutation {
   signup(password: String!, username: String!): User!
   login(password: String!, username: String!): User!
-  createOrganization(name: String!): Organization!
+  createOrganization(input: CreateOrganizationInput!): Organization!
+}
+
+input CreateOrganizationInput {
+  name: String!
 }
