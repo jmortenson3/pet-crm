@@ -20,6 +20,17 @@ type Organization {
   updatedBy: String
   id: String!
   name: String!
+  locations: [Location!]!
+}
+
+type Location {
+  createdDate: String!
+  createdBy: String!
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  organizationId: String!
+  name: String!
 }
 
 type Query {
@@ -37,6 +48,7 @@ type Mutation {
   login(password: String!, username: String!): User!
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
+  createLocation(input: CreateLocationInput!): Location!
 }
 
 input CreateOrganizationInput {
@@ -46,4 +58,9 @@ input CreateOrganizationInput {
 input UpdateOrganizationInput {
   id: String!
   name: String!
+}
+
+input CreateLocationInput {
+  name: String!
+  organizationId: String!
 }

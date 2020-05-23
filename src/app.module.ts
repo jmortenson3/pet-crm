@@ -10,12 +10,13 @@ import { AuthModule } from './auth/auth.module';
 import { UsersResolver } from './users/users.resolver';
 import { AuthResolver } from './auth/auth.resolvers';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       context: ({ req, res }) => ({ req, res }),
-      include: [UsersModule, AuthModule, OrganizationsModule],
+      include: [UsersModule, AuthModule, OrganizationsModule, LocationsModule],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
       playground: true,
@@ -25,6 +26,7 @@ import { OrganizationsModule } from './organizations/organizations.module';
     UsersModule,
     AuthModule,
     OrganizationsModule,
+    LocationsModule,
   ],
   providers: [UsersResolver, AuthResolver],
 })

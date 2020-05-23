@@ -1,17 +1,30 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
 import { Organization } from './models/organization.entity';
 import { OrganizationsService } from './organizations.service';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, Logger } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
 import { CreateOrganizationInput } from './models/create-organization.input';
 import { GetOrganizationByIdInput } from './models/get-organization-by-id.input';
 import { UpdateOrganizationInput } from './models/update-organization.input';
+import { LocationsService } from 'src/locations/locations.service';
+import { Location } from 'src/locations/models/location.entity';
 
 @Resolver(of => Organization)
 export class OrganizationsResolver {
-  constructor(private organizationsService: OrganizationsService) {}
+  private readonly logger = new Logger(OrganizationsResolver.name);
+  constructor(
+    private readonly organizationsService: OrganizationsService,
+    private readonly locationsService: LocationsService,
+  ) {}
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Organization, { name: 'createOrganization' })
@@ -49,5 +62,14 @@ export class OrganizationsResolver {
     @Args('input') getOrganizationByIdData: GetOrganizationByIdInput,
   ) {
     return await this.organizationsService.findOne(getOrganizationByIdData.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField('locations', returns => [Location])
+  async locations(@Parent() organization: Organization) {
+    this.logger.log(`Finding locations for organization ${organization.id}`);
+    return await this.locationsService.findAll({
+      organizationId: organization.id.toString(),
+    });
   }
 }

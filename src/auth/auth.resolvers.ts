@@ -8,7 +8,6 @@ import { Response } from 'express';
 
 @Resolver(of => User)
 export class AuthResolver {
-  private readonly logger = new Logger(AuthResolver.name);
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
@@ -37,9 +36,7 @@ export class AuthResolver {
       throw new NotFoundException();
     }
 
-    this.logger.log('creating token from user: ' + JSON.stringify(user));
     const token = await this.authService.createTokenFromUser(user);
-    this.logger.log('token: ' + token);
 
     res.cookie(this.configService.get<string>('JWT_COOKIE_NAME'), token, {
       httpOnly: true,
