@@ -36,8 +36,14 @@ type Mutation {
   signup(password: String!, username: String!): User!
   login(password: String!, username: String!): User!
   createOrganization(input: CreateOrganizationInput!): Organization!
+  updateOrganization(input: UpdateOrganizationInput!): Organization!
 }
 
 input CreateOrganizationInput {
+  name: String!
+}
+
+input UpdateOrganizationInput {
+  id: String!
   name: String!
 }

@@ -7,6 +7,7 @@ import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
 import { CreateOrganizationInput } from './models/create-organization.input';
 import { GetOrganizationByIdInput } from './models/get-organization-by-id.input';
+import { UpdateOrganizationInput } from './models/update-organization.input';
 
 @Resolver(of => Organization)
 export class OrganizationsResolver {
@@ -21,6 +22,19 @@ export class OrganizationsResolver {
     const org = new Organization();
     org.name = createOrganizationData.name;
     return await this.organizationsService.create(org, user);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Organization, { name: 'updateOrganization' })
+  async updateOrganization(
+    @Args('input') updateOrganizationData: UpdateOrganizationInput,
+    @GqlUser() user: User,
+  ) {
+    const org = await this.organizationsService.findOne(
+      updateOrganizationData.id,
+    );
+    org.name = updateOrganizationData.name;
+    return this.organizationsService.update(org, user);
   }
 
   @UseGuards(GqlAuthGuard)

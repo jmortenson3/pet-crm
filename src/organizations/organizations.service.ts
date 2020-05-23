@@ -23,4 +23,9 @@ export class OrganizationsService {
   findOne(id: string): Promise<Organization> {
     return this.organizationRepository.findOne(id);
   }
+
+  update(organization: Organization, user: User): Promise<Organization> {
+    organization.updatedBy = user.id.toString();
+    return this.organizationRepository.save(organization);
+  }
 }
