@@ -9,12 +9,13 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersResolver } from './users/users.resolver';
 import { AuthResolver } from './auth/auth.resolvers';
+import { OrganizationsModule } from './organizations/organizations.module';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       context: ({ req, res }) => ({ req, res }),
-      include: [UsersModule, AuthModule],
+      include: [UsersModule, AuthModule, OrganizationsModule],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
       playground: true,
@@ -23,6 +24,7 @@ import { AuthResolver } from './auth/auth.resolvers';
     TypeOrmModule.forRoot(),
     UsersModule,
     AuthModule,
+    OrganizationsModule,
   ],
   providers: [UsersResolver, AuthResolver],
 })

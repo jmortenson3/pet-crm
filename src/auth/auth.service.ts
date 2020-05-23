@@ -20,9 +20,8 @@ export class AuthService {
     return this.usersService.create(user);
   }
 
-  async createTokenFromUser(user: any): Promise<string> {
-    const payload = { username: user.username, sub: user.userId };
-    return this.jwtService.sign(payload);
+  async createTokenFromUser(user: User): Promise<string> {
+    return this.jwtService.sign({ id: user.id });
   }
 
   async validateUser(username: string, password: string): Promise<User | any> {

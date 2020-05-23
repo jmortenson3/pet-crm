@@ -37,6 +37,7 @@ export class AuthResolver {
       throw new NotFoundException();
     }
 
+    this.logger.log('creating token from user: ' + JSON.stringify(user));
     const token = await this.authService.createTokenFromUser(user);
     this.logger.log('token: ' + token);
 

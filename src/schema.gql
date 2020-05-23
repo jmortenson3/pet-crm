@@ -3,17 +3,33 @@
 # ------------------------------------------------------
 
 type User {
+  createdDate: String!
+  createdBy: String!
+  updatedDate: String
+  updatedBy: String
   id: String!
   email: String!
   firstName: String
   lastName: String
 }
 
+type Organization {
+  createdDate: String!
+  createdBy: String!
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  name: String!
+}
+
 type Query {
   users(username: String!): User!
+  organizations: [Organization!]!
+  organization(id: String!): Organization!
 }
 
 type Mutation {
   signup(password: String!, username: String!): User!
   login(password: String!, username: String!): User!
+  createOrganization(name: String!): Organization!
 }

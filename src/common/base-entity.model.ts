@@ -1,6 +1,32 @@
+import { Column, BeforeUpdate, BeforeInsert, Entity } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import * as moment from 'moment';
+
+@ObjectType()
 export abstract class BaseEntity {
-  createdDate: string;
-  createdBy: string;
-  updatedDate: string;
-  updatedBy: string;
+  @Column()
+  @Field()
+  public createdDate: string;
+
+  @Column()
+  @Field()
+  public createdBy: string;
+
+  @Column()
+  @Field({ nullable: true })
+  public updatedDate: string;
+
+  @Column()
+  @Field({ nullable: true })
+  public updatedBy: string;
+
+  @BeforeUpdate()
+  public setUpdatedDate() {
+    this.updatedDate = moment.utc().format();
+  }
+
+  @BeforeInsert()
+  public setCreatedDate() {
+    this.createdDate = moment.utc().format();
+  }
 }
