@@ -12,6 +12,7 @@ import { AuthResolver } from './auth/auth.resolvers';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { LocationsModule } from './locations/locations.module';
 import { PetsModule } from './pets/pets.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PetsModule } from './pets/pets.module';
         OrganizationsModule,
         LocationsModule,
         PetsModule,
+        BookingsModule,
       ],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
@@ -35,6 +37,7 @@ import { PetsModule } from './pets/pets.module';
     OrganizationsModule,
     LocationsModule,
     PetsModule,
+    BookingsModule,
   ],
   providers: [UsersResolver, AuthResolver],
 })

@@ -32,6 +32,7 @@ type Organization {
   id: String!
   name: String!
   locations: [Location!]!
+  bookings: [Booking!]!
 }
 
 type Location {
@@ -42,6 +43,20 @@ type Location {
   id: String!
   organizationId: String!
   name: String!
+  bookings: [Booking!]!
+}
+
+type Booking {
+  createdDate: String!
+  createdBy: String!
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  userId: String!
+  organizationId: String!
+  locationId: String!
+  dropoffDate: String!
+  pickupDate: String!
 }
 
 type Query {
@@ -49,9 +64,21 @@ type Query {
   user(username: String!): User!
   allOrganizations: [Organization!]!
   organization(input: GetOrganizationByIdInput!): Organization!
+  location(input: GetLocationByIdInput!): Location!
+  allLocation: Location!
+  booking(input: GetBookingByIdInput!): Booking!
+  allBookings: [Booking!]!
 }
 
 input GetOrganizationByIdInput {
+  id: String!
+}
+
+input GetLocationByIdInput {
+  id: String!
+}
+
+input GetBookingByIdInput {
   id: String!
 }
 
@@ -62,6 +89,7 @@ type Mutation {
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!
   createLocation(input: CreateLocationInput!): Location!
+  createBooking(input: CreateBookingInput!): Booking!
 }
 
 input CreatePetInput {
@@ -81,4 +109,11 @@ input UpdateOrganizationInput {
 input CreateLocationInput {
   name: String!
   organizationId: String!
+}
+
+input CreateBookingInput {
+  organizationId: String!
+  locationId: String!
+  dropoffDate: String!
+  pickupDate: String!
 }

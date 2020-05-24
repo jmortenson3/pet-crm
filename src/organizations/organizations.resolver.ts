@@ -17,6 +17,8 @@ import { GetOrganizationByIdInput } from './models/get-organization-by-id.input'
 import { UpdateOrganizationInput } from './models/update-organization.input';
 import { LocationsService } from 'src/locations/locations.service';
 import { Location } from 'src/locations/models/location.entity';
+import { Booking } from 'src/bookings/models/booking.entity';
+import { BookingsService } from 'src/bookings/bookings.service';
 
 @Resolver(of => Organization)
 export class OrganizationsResolver {
@@ -24,6 +26,7 @@ export class OrganizationsResolver {
   constructor(
     private readonly organizationsService: OrganizationsService,
     private readonly locationsService: LocationsService,
+    private readonly bookingsService: BookingsService,
   ) {}
 
   @UseGuards(GqlAuthGuard)
@@ -67,8 +70,15 @@ export class OrganizationsResolver {
   @UseGuards(GqlAuthGuard)
   @ResolveField('locations', returns => [Location])
   async locations(@Parent() organization: Organization) {
-    this.logger.log(`Finding locations for organization ${organization.id}`);
     return await this.locationsService.findAll({
+      organizationId: organization.id.toString(),
+    });
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField('bookings', returns => [Booking])
+  async bookings(@Parent() organization: Organization) {
+    return await this.bookingsService.findAll({
       organizationId: organization.id.toString(),
     });
   }

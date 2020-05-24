@@ -4,11 +4,13 @@ import { Location } from './models/location.entity';
 import { LocationsService } from './locations.service';
 import { LocationsResolver } from './locations.resolver';
 import { OrganizationsModule } from 'src/organizations/organizations.module';
+import { BookingsModule } from 'src/bookings/bookings.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Location]),
     forwardRef(() => OrganizationsModule),
+    BookingsModule,
   ],
   providers: [LocationsService, LocationsResolver],
   exports: [LocationsService],
