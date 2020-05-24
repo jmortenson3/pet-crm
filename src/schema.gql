@@ -65,7 +65,7 @@ type Query {
   allOrganizations: [Organization!]!
   organization(input: GetOrganizationByIdInput!): Organization!
   location(input: GetLocationByIdInput!): Location!
-  allLocation: Location!
+  allLocations: [Location!]!
   booking(input: GetBookingByIdInput!): Booking!
   allBookings: [Booking!]!
 }
@@ -116,4 +116,8 @@ input CreateBookingInput {
   locationId: String!
   dropoffDate: String!
   pickupDate: String!
+}
+
+type Subscription {
+  bookingRequested(locationId: String!): Booking!
 }

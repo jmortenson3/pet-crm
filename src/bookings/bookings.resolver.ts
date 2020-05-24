@@ -7,6 +7,9 @@ import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
 import { Booking } from './models/booking.entity';
 import { GetBookingByIdInput } from './models/get-booking-by-id.input';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver()
 export class BookingsResolver {
@@ -24,7 +27,10 @@ export class BookingsResolver {
     booking.locationId = createBookingData.locationId.toString();
     booking.pickupDate = createBookingData.pickupDate;
     booking.dropoffDate = createBookingData.dropoffDate;
-    return await this.bookingsService.create(booking, user);
+
+    const createdBooking = await this.bookingsService.create(booking, user);
+    pubSub.publish('bookingRequested', { bookingRequested: createdBooking });
+    return createdBooking;
   }
 
   @UseGuards(GqlAuthGuard)

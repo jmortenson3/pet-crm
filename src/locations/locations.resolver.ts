@@ -5,7 +5,9 @@ import {
   ResolveField,
   Parent,
   Query,
+  Subscription,
 } from '@nestjs/graphql';
+import { PubSub } from 'graphql-subscriptions';
 import { Location } from './models/location.entity';
 import { LocationsService } from './locations.service';
 import { UseGuards } from '@nestjs/common';
@@ -16,6 +18,8 @@ import { CreateLocationInput } from './models/create-location.input';
 import { BookingsService } from 'src/bookings/bookings.service';
 import { Booking } from 'src/bookings/models/booking.entity';
 import { GetLocationByIdInput } from './models/get-location-by-id.input';
+
+const pubSub = new PubSub();
 
 @Resolver(of => Location)
 export class LocationsResolver {
@@ -43,7 +47,7 @@ export class LocationsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Query(returns => Location, { name: 'allLocation' })
+  @Query(returns => [Location], { name: 'allLocations' })
   async getLocations() {
     return await this.locationsService.findAll();
   }
@@ -54,5 +58,14 @@ export class LocationsResolver {
     return await this.bookingsService.findAll({
       locationId: location.id.toString(),
     });
+  }
+
+  @Subscription(returns => Booking, {
+    name: 'bookingRequested',
+    filter: (payload, variables) =>
+      payload.bookingRequested.locaationId === variables.locationId,
+  })
+  bookingRequested(@Args('locationId') locationId: string) {
+    return pubSub.asyncIterator('bookingRequested');
   }
 }
