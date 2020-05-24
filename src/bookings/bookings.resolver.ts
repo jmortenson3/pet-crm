@@ -1,19 +1,21 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { BookingsService } from './bookings.service';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, Inject } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { CreateBookingInput } from './models/create-booking.input';
 import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
 import { Booking } from './models/booking.entity';
 import { GetBookingByIdInput } from './models/get-booking-by-id.input';
-import { PubSub } from 'graphql-subscriptions';
-
-const pubSub = new PubSub();
+import { PubSubEngine } from 'graphql-subscriptions';
+import { EVENTS } from 'src/events';
 
 @Resolver()
 export class BookingsResolver {
-  constructor(private readonly bookingsService: BookingsService) {}
+  constructor(
+    private readonly bookingsService: BookingsService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSubEngine,
+  ) {}
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Booking, { name: 'createBooking' })
@@ -29,7 +31,9 @@ export class BookingsResolver {
     booking.dropoffDate = createBookingData.dropoffDate;
 
     const createdBooking = await this.bookingsService.create(booking, user);
-    pubSub.publish('bookingRequested', { bookingRequested: createdBooking });
+    this.pubSub.publish(EVENTS.BOOKING_REQUESTED, {
+      [EVENTS.BOOKING_REQUESTED]: createdBooking,
+    });
     return createdBooking;
   }
 

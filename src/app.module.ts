@@ -13,6 +13,7 @@ import { OrganizationsModule } from './organizations/organizations.module';
 import { LocationsModule } from './locations/locations.module';
 import { PetsModule } from './pets/pets.module';
 import { BookingsModule } from './bookings/bookings.module';
+import { PubSubModule } from './pubsub/pubsub.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BookingsModule } from './bookings/bookings.module';
     LocationsModule,
     PetsModule,
     BookingsModule,
+    PubSubModule,
   ],
   providers: [UsersResolver, AuthResolver],
 })
