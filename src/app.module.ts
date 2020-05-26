@@ -14,6 +14,7 @@ import { LocationsModule } from './locations/locations.module';
 import { PetsModule } from './pets/pets.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { PubSubModule } from './pubsub/pubsub.module';
+import { ResponseHeadersMiddleware } from './common/middleware/response-headers.middleware';
 
 @Module({
   imports: [
@@ -30,6 +31,10 @@ import { PubSubModule } from './pubsub/pubsub.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       installSubscriptionHandlers: true,
       playground: true,
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(),
@@ -45,6 +50,12 @@ import { PubSubModule } from './pubsub/pubsub.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser(), LoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(
+        cookieParser(),
+        LoggerMiddleware,
+        //ResponseHeadersMiddleware,
+      )
+      .forRoutes('*');
   }
 }

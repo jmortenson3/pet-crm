@@ -39,7 +39,7 @@ export class AuthResolver {
     const token = await this.authService.createTokenFromUser(user);
 
     res.cookie(this.configService.get<string>('JWT_COOKIE_NAME'), token, {
-      httpOnly: true,
+      //httpOnly: true,  re-enable this
     });
 
     return user;
