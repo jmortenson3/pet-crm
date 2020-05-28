@@ -85,6 +85,7 @@ input GetBookingByIdInput {
 type Mutation {
   signup(input: SignupInput!): User!
   login(input: LoginInput!): User!
+  autoLogin: User!
   createPet(input: CreatePetInput!): Pet!
   createOrganization(input: CreateOrganizationInput!): Organization!
   updateOrganization(input: UpdateOrganizationInput!): Organization!

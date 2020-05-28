@@ -22,7 +22,7 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   @Query(returns => User, { name: 'user' })
   async getUser(@Args('username', { type: () => String }) username: string) {
-    return await this.usersService.findOne(username);
+    return await this.usersService.findOne({ email: username });
   }
 
   @UseGuards(GqlAuthGuard)
