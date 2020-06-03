@@ -13,14 +13,13 @@ export class LocationsService {
     private readonly organizationService: OrganizationsService,
   ) {}
 
-  create(location: Location, user: User): Promise<Location> {
+  create(location: Location): Promise<Location> {
     const organization = this.organizationService.findOne(
-      location.organizationId.toString(),
+      location.organization.id,
     );
     if (!organization) {
       throw new NotFoundException();
     }
-    location.createdBy = user.id.toString();
     return this.locationRepository.save(location);
   }
 

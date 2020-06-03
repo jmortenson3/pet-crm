@@ -1,0 +1,16 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": "5433",
+  "username": "app_user",
+  "password": "app_user",
+  "schema": "apps",
+  "database": "petcrm",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": false,
+  "migrations": ["dist/migrations/*.js"],
+  "cli": {
+    "migrationsDir": "dist/migrations"
+  },
+  "migrationsRun": true
+}

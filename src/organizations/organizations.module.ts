@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Organization } from './models/organization.entity';
 import { LocationsModule } from 'src/locations/locations.module';
 import { BookingsModule } from 'src/bookings/bookings.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Organization]),
     forwardRef(() => LocationsModule),
-    BookingsModule,
+    forwardRef(() => BookingsModule),
+    UsersModule,
   ],
   providers: [OrganizationsService, OrganizationsResolver],
   exports: [OrganizationsService],

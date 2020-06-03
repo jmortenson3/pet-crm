@@ -10,8 +10,7 @@ export class BookingsService {
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
   ) {}
-  create(booking: Booking, user: User): Promise<Booking> {
-    booking.createdBy = user.id.toString();
+  create(booking: Booking): Promise<Booking> {
     return this.bookingRepository.save(booking);
   }
 
@@ -23,8 +22,7 @@ export class BookingsService {
     return this.bookingRepository.findOne(id);
   }
 
-  update(booking: Booking, user: User): Promise<Booking> {
-    booking.updatedBy = user.id.toString();
+  update(booking: Booking): Promise<Booking> {
     return this.bookingRepository.save(booking);
   }
 }

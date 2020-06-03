@@ -19,6 +19,9 @@ import { LocationsService } from 'src/locations/locations.service';
 import { Location } from 'src/locations/models/location.entity';
 import { Booking } from 'src/bookings/models/booking.entity';
 import { BookingsService } from 'src/bookings/bookings.service';
+import { UsersService } from 'src/users/users.service';
+import { Permission } from 'src/users/models/permission.entity';
+import * as moment from 'moment';
 
 @Resolver(of => Organization)
 export class OrganizationsResolver {
@@ -27,17 +30,35 @@ export class OrganizationsResolver {
     private readonly organizationsService: OrganizationsService,
     private readonly locationsService: LocationsService,
     private readonly bookingsService: BookingsService,
+    private readonly usersService: UsersService,
   ) {}
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Organization, { name: 'createOrganization' })
   async createOrganization(
     @Args('input') createOrganizationData: CreateOrganizationInput,
-    @GqlUser() user: User,
+    @GqlUser() gqlUser: User,
   ) {
+    const user = await this.usersService.findOne({ id: gqlUser.id });
     const org = new Organization();
     org.name = createOrganizationData.name;
-    return await this.organizationsService.create(org, user);
+    const createdOrganization = await this.organizationsService.create(
+      org,
+      gqlUser,
+    );
+    const permission = new Permission();
+    permission.organization = org;
+    permission.isOwner = true;
+    permission.isMember = true;
+    permission.memberDate = moment.utc().format();
+    permission.createdBy = gqlUser.id.toString();
+    if (user.permissions) {
+      gqlUser.permissions.push(permission);
+    } else {
+      gqlUser.permissions = [permission];
+    }
+    await this.usersService.update(gqlUser);
+    return createdOrganization;
   }
 
   @UseGuards(GqlAuthGuard)

@@ -5,18 +5,18 @@ import * as moment from 'moment';
 @ObjectType()
 export abstract class BaseEntity {
   @Column()
-  @Field()
+  @Field({ nullable: true })
   public createdDate: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   public createdBy: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field({ nullable: true })
   public updatedDate: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field({ nullable: true })
   public updatedBy: string;
 

@@ -25,4 +25,8 @@ export class UsersService {
   create(user: User): Promise<User> {
     return this.usersRepository.save(user);
   }
+
+  update(user: User): Promise<User> {
+    return this.usersRepository.save(user);
+  }
 }
