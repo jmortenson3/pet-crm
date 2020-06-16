@@ -19,34 +19,34 @@ export class Permission extends BaseEntity {
   @ManyToOne(type => User, { primary: true })
   user: User;
 
-  @Column()
+  @Column({ default: false })
   @Field({
     description:
       'Owners can read and write every resource and can delete locations/organizations.',
   })
   isOwner: boolean;
 
-  @Column()
+  @Column({ default: false })
   @Field({ description: 'Admins can read and write every resource.' })
   isAdmin: boolean;
 
-  @Column()
+  @Column({ default: false })
   @Field()
   isInvited: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   @Field()
   invitedDate: string;
 
-  @Column()
+  @Column({ default: false })
   @Field()
   isInviteAccepted: boolean;
 
-  @Column()
+  @Column({ default: false })
   @Field()
   isMember: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   @Field({ description: "Anniversary date of this user's membership." })
   memberDate: string;
 }

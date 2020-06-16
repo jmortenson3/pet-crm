@@ -8,7 +8,11 @@ import {
 } from '@nestjs/graphql';
 import { Organization } from './models/organization.entity';
 import { OrganizationsService } from './organizations.service';
-import { UseGuards, Logger } from '@nestjs/common';
+import {
+  UseGuards,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
@@ -22,6 +26,8 @@ import { BookingsService } from 'src/bookings/bookings.service';
 import { UsersService } from 'src/users/users.service';
 import { Permission } from 'src/users/models/permission.entity';
 import * as moment from 'moment';
+import { PermissionsService } from 'src/users/permissions.service';
+import { getManager } from 'typeorm';
 
 @Resolver(of => Organization)
 export class OrganizationsResolver {
@@ -31,6 +37,7 @@ export class OrganizationsResolver {
     private readonly locationsService: LocationsService,
     private readonly bookingsService: BookingsService,
     private readonly usersService: UsersService,
+    private readonly permissionsService: PermissionsService,
   ) {}
 
   @UseGuards(GqlAuthGuard)
@@ -39,26 +46,30 @@ export class OrganizationsResolver {
     @Args('input') createOrganizationData: CreateOrganizationInput,
     @GqlUser() gqlUser: User,
   ) {
-    const user = await this.usersService.findOne({ id: gqlUser.id });
-    const org = new Organization();
-    org.name = createOrganizationData.name;
-    const createdOrganization = await this.organizationsService.create(
-      org,
-      gqlUser,
-    );
-    const permission = new Permission();
-    permission.organization = org;
-    permission.isOwner = true;
-    permission.isMember = true;
-    permission.memberDate = moment.utc().format();
-    permission.createdBy = gqlUser.id.toString();
-    if (user.permissions) {
-      gqlUser.permissions.push(permission);
-    } else {
-      gqlUser.permissions = [permission];
+    try {
+      const entityManager = getManager();
+      await entityManager.transaction(async entityManager => {
+        const user = await this.usersService.findOne({ id: gqlUser.id });
+        const org = new Organization();
+        org.name = createOrganizationData.name;
+        org.createdBy = user.id;
+        const createdOrganization = await this.organizationsService.create(org);
+
+        const permission = new Permission();
+        permission.user = user;
+        permission.organization = org;
+        permission.isOwner = true;
+        permission.isMember = true;
+        permission.memberDate = moment.utc().format();
+        permission.createdBy = user.id;
+        await this.permissionsService.create(permission);
+
+        return createdOrganization;
+      });
+    } catch (err) {
+      this.logger.error(err);
+      throw new InternalServerErrorException();
     }
-    await this.usersService.update(gqlUser);
-    return createdOrganization;
   }
 
   @UseGuards(GqlAuthGuard)
@@ -71,7 +82,8 @@ export class OrganizationsResolver {
       updateOrganizationData.id,
     );
     org.name = updateOrganizationData.name;
-    return this.organizationsService.update(org, user);
+    org.updatedBy = user.id;
+    return this.organizationsService.update(org);
   }
 
   @UseGuards(GqlAuthGuard)

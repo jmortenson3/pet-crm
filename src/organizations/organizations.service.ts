@@ -11,8 +11,7 @@ export class OrganizationsService {
     private organizationRepository: Repository<Organization>,
   ) {}
 
-  create(organization: Organization, user: User): Promise<Organization> {
-    organization.createdBy = user.id.toString();
+  create(organization: Organization): Promise<Organization> {
     return this.organizationRepository.save(organization);
   }
 
@@ -24,8 +23,7 @@ export class OrganizationsService {
     return this.organizationRepository.findOne(id);
   }
 
-  update(organization: Organization, user: User): Promise<Organization> {
-    organization.updatedBy = user.id.toString();
+  update(organization: Organization): Promise<Organization> {
     return this.organizationRepository.save(organization);
   }
 }
