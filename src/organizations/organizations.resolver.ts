@@ -90,22 +90,18 @@ export class OrganizationsResolver {
   @UseGuards(GqlAuthGuard)
   @ResolveField('locations', returns => [Location])
   async locations(@Parent() organization: Organization) {
-    return await this.locationsService.findAll({
-      organizationId: organization.id.toString(),
-    });
+    return await this.locationsService.findByOrganization(organization);
   }
 
   @UseGuards(GqlAuthGuard)
   @ResolveField('bookings', returns => [Booking])
   async bookings(@Parent() organization: Organization) {
-    return await this.bookingsService.findAll({
-      organizationId: organization.id.toString(),
-    });
+    return await this.bookingsService.findByOrganization(organization);
   }
 
   @UseGuards(GqlAuthGuard)
   @ResolveField('users', returns => [User])
   async users(@Parent() organization: Organization) {
-    return await this.usersService.findAll();
+    return await this.usersService.findByOrganization(organization);
   }
 }

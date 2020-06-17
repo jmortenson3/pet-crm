@@ -61,9 +61,7 @@ export class LocationsResolver {
   @UseGuards(GqlAuthGuard)
   @ResolveField('bookings', returns => [Booking])
   async bookings(@Parent() location: Location) {
-    return await this.bookingsService.findAll({
-      locationId: location.id.toString(),
-    });
+    return await this.bookingsService.findByLocation(location);
   }
 
   @Subscription(returns => Booking, {

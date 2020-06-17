@@ -5,8 +5,10 @@ import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { CreateBookingInput } from './models/create-booking.input';
 import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
-import { Booking } from './models/booking.entity';
+import { Booking, BookingStatus } from './models/booking.entity';
 import { GetBookingByIdInput } from './models/get-booking-by-id.input';
+import { AcceptBookingInput } from './models/accept-booking.input';
+import { DenyBookingInput } from './models/deny-booking.input';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { EVENTS } from 'src/events';
 import { UsersService } from 'src/users/users.service';
@@ -43,12 +45,42 @@ export class BookingsResolver {
     booking.pickupDate = createBookingData.pickupDate;
     booking.dropoffDate = createBookingData.dropoffDate;
     booking.createdBy = user.id.toString();
+    booking.bookingStatus = BookingStatus.REQUESTED;
 
     const createdBooking = await this.bookingsService.create(booking);
     this.pubSub.publish(EVENTS.BOOKING_REQUESTED, {
       [EVENTS.BOOKING_REQUESTED]: createdBooking,
     });
     return createdBooking;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Booking, { name: 'acceptBooking' })
+  async acceptBooking(
+    @Args('input') acceptBookingData: AcceptBookingInput,
+    @GqlUser() gqlUser: User,
+  ) {
+    const user = await this.usersService.findOne({ id: gqlUser.id });
+    const booking = await this.bookingsService.findOne(acceptBookingData.id);
+    booking.updatedBy = user.id;
+    const acceptedBooking = await this.bookingsService.acceptBooking(booking);
+    return acceptedBooking;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Booking, { name: 'denyBooking' })
+  async denyBooking(
+    @Args('input') denyBookingData: DenyBookingInput,
+    @GqlUser() gqlUser: User,
+  ) {
+    const user = await this.usersService.findOne({ id: gqlUser.id });
+    const booking = await this.bookingsService.findOne(denyBookingData.id);
+    booking.updatedBy = user.id;
+    const deniedBooking = await this.bookingsService.denyBooking(
+      booking,
+      denyBookingData.deniedNotes,
+    );
+    return deniedBooking;
   }
 
   @UseGuards(GqlAuthGuard)

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
 import { Membership } from './models/membership.entity';
-import { Repository, QueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Organization } from 'src/organizations/models/organization.entity';
 
 @Injectable()
@@ -26,15 +26,14 @@ export class UsersService {
     }
   }
 
-  findUsersByOrganization(organization: Organization): Promise<User[]> {
-    return this.usersRepository.find({
-      join: { alias: 'users', innerJoin: { memberships: 'users.memberships' } },
-      where: qb => {
-        qb.where({}).andWhere('memberships.organizationId = :organizationId', {
-          organizationId: organization.id,
-        });
-      },
-    });
+  findByOrganization(organization: Organization): Promise<User[]> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.memberships', 'membership')
+      .where('membership.organization = :organization', {
+        organization: organization.id,
+      })
+      .getMany();
   }
 
   create(user: User): Promise<User> {
