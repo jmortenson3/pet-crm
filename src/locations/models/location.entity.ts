@@ -8,7 +8,7 @@ import {
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base-entity.model';
 import { Organization } from 'src/organizations/models/organization.entity';
-import { Permission } from 'src/users/models/permission.entity';
+import { Membership } from 'src/users/models/membership.entity';
 
 @Entity()
 @ObjectType()

@@ -7,14 +7,15 @@ import { Location } from 'src/locations/models/location.entity';
 
 @Entity()
 @ObjectType()
-export class Permission extends BaseEntity {
+export class Membership extends BaseEntity {
   @ManyToOne(type => Organization, {
     primary: true,
   })
   organization: Organization;
 
-  @ManyToOne(type => Location, { primary: true, nullable: true })
-  location: Location;
+  // Leave this out for now
+  // @ManyToOne(type => Location, { primary: true, nullable: true })
+  // location: Location;
 
   @ManyToOne(type => User, { primary: true })
   user: User;

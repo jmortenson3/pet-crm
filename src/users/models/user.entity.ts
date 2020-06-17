@@ -8,7 +8,7 @@ import {
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base-entity.model';
 import { Pet } from 'src/pets/models/pet.entity';
-import { Permission } from './permission.entity';
+import { Membership } from './membership.entity';
 
 @Entity()
 @ObjectType()
@@ -40,8 +40,8 @@ export class User extends BaseEntity {
   pets: Pet[];
 
   @OneToMany(
-    type => Permission,
-    permission => permission.user,
+    type => Membership,
+    membership => membership.user,
   )
-  permissions: Permission[];
+  memberships: Membership[];
 }
