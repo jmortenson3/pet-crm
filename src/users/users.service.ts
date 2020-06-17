@@ -26,7 +26,7 @@ export class UsersService {
     }
   }
 
-  findUsersByOrganization(organization: Organization): Promise<User[]> {
+  findByOrganization(organization: Organization): Promise<User[]> {
     return this.usersRepository
       .createQueryBuilder('user')
       .innerJoin('user.memberships', 'membership')

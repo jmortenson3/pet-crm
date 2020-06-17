@@ -5,7 +5,7 @@ import { User } from 'src/users/models/user.entity';
 import { Organization } from 'src/organizations/models/organization.entity';
 import { Location } from 'src/locations/models/location.entity';
 
-const enum BookingStatus {
+export const enum BookingStatus {
   REQUESTED = 'REQUESTED',
   ACCEPTED = 'ACCEPTED',
   DENIED = 'DENIED',
@@ -40,6 +40,6 @@ export class Booking extends BaseEntity {
   bookingStatus: BookingStatus;
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   bookingDeniedNotes: string;
 }

@@ -96,14 +96,12 @@ export class OrganizationsResolver {
   @UseGuards(GqlAuthGuard)
   @ResolveField('bookings', returns => [Booking])
   async bookings(@Parent() organization: Organization) {
-    return await this.bookingsService.findAll({
-      organizationId: organization.id.toString(),
-    });
+    return await this.bookingsService.findByOrganization(organization);
   }
 
   @UseGuards(GqlAuthGuard)
   @ResolveField('users', returns => [User])
   async users(@Parent() organization: Organization) {
-    return await this.usersService.findUsersByOrganization(organization);
+    return await this.usersService.findByOrganization(organization);
   }
 }
