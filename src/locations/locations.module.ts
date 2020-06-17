@@ -11,7 +11,7 @@ import { PubSubModule } from 'src/pubsub/pubsub.module';
   imports: [
     TypeOrmModule.forFeature([Location]),
     forwardRef(() => OrganizationsModule),
-    BookingsModule,
+    forwardRef(() => BookingsModule),
     PubSubModule,
   ],
   providers: [LocationsService, LocationsResolver],

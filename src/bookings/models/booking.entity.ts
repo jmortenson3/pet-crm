@@ -1,31 +1,37 @@
-import { Entity, ObjectIdColumn, ObjectID, Column } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base-entity.model';
+import { User } from 'src/users/models/user.entity';
+import { Organization } from 'src/organizations/models/organization.entity';
+import { Location } from 'src/locations/models/location.entity';
 
 @Entity()
 @ObjectType()
 export class Booking extends BaseEntity {
-  @ObjectIdColumn()
-  @Field(type => String)
-  id: ObjectID;
-
-  @Column()
+  @PrimaryGeneratedColumn('uuid')
   @Field()
-  userId: string;
+  id: string;
 
-  @Column()
-  @Field()
-  organizationId: string;
+  @ManyToOne(type => User)
+  user: User;
 
-  @Column()
-  @Field()
-  locationId: string;
+  @ManyToOne(type => Organization)
+  organization: Organization;
 
-  @Column()
+  @ManyToOne(type => Location)
+  location: Location;
+
+  @Column({ nullable: true })
   @Field()
   dropoffDate: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field()
   pickupDate: string;
 }

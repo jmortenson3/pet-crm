@@ -10,17 +10,31 @@
 $ npm install
 ```
 
+Also make sure to have docker installed.
+
 ## Running the app
+
+A `.env` file needs to be created with the following variables set
+
+```conf
+JWT_COOKIE_NAME=
+SERVER_PORT=
+DB_USERNAME=
+DB_PASSWD=
+DB_DATABASE_NAME=
+DB_HOST=
+DB_PORT=
+```
 
 ```bash
 # development
-$ npm run start
+$ docker-compose up
 
-# watch mode
-$ npm run start:dev
+# re-build development
+$ docker-compose up --build -V
 
 # production mode
-$ npm run start:prod
+$ # todo
 ```
 
 ## Test
@@ -28,9 +42,6 @@ $ npm run start:prod
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov

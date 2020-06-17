@@ -2,9 +2,39 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Pet {
+  createdDate: String
+  createdBy: String
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  name: String!
+}
+
+type Location {
+  createdDate: String
+  createdBy: String
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  name: String!
+  bookings: [Booking!]!
+}
+
+type Organization {
+  createdDate: String
+  createdBy: String
+  updatedDate: String
+  updatedBy: String
+  id: String!
+  name: String!
+  locations: [Location!]!
+  bookings: [Booking!]!
+}
+
 type User {
-  createdDate: String!
-  createdBy: String!
+  createdDate: String
+  createdBy: String
   updatedDate: String
   updatedBy: String
   id: String!
@@ -14,47 +44,12 @@ type User {
   pets: [Pet!]!
 }
 
-type Pet {
-  createdDate: String!
-  createdBy: String!
-  updatedDate: String
-  updatedBy: String
-  id: String!
-  userId: String!
-  name: String!
-}
-
-type Organization {
-  createdDate: String!
-  createdBy: String!
-  updatedDate: String
-  updatedBy: String
-  id: String!
-  name: String!
-  locations: [Location!]!
-  bookings: [Booking!]!
-}
-
-type Location {
-  createdDate: String!
-  createdBy: String!
-  updatedDate: String
-  updatedBy: String
-  id: String!
-  organizationId: String!
-  name: String!
-  bookings: [Booking!]!
-}
-
 type Booking {
-  createdDate: String!
-  createdBy: String!
+  createdDate: String
+  createdBy: String
   updatedDate: String
   updatedBy: String
   id: String!
-  userId: String!
-  organizationId: String!
-  locationId: String!
   dropoffDate: String!
   pickupDate: String!
 }

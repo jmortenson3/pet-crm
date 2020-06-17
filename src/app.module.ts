@@ -4,7 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as cookieParser from 'cookie-parser';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersResolver } from './users/users.resolver';
@@ -37,7 +37,17 @@ import { ResponseHeadersMiddleware } from './common/middleware/response-headers.
       },
     }),
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWD,
+      database: process.env.DB_DATABASE_NAME,
+      synchronize: true,
+      entities: [join(__dirname, '../**/**.entity{.ts,.js}')],
+      logging: 'all',
+    }),
     UsersModule,
     AuthModule,
     OrganizationsModule,

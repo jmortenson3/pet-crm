@@ -19,11 +19,13 @@ import { BookingsService } from 'src/bookings/bookings.service';
 import { Booking } from 'src/bookings/models/booking.entity';
 import { GetLocationByIdInput } from './models/get-location-by-id.input';
 import { EVENTS } from 'src/events';
+import { OrganizationsService } from 'src/organizations/organizations.service';
 
 @Resolver(of => Location)
 export class LocationsResolver {
   constructor(
     private readonly locationsService: LocationsService,
+    private readonly organizationsService: OrganizationsService,
     private readonly bookingsService: BookingsService,
     @Inject('PUB_SUB') private readonly pubSub: PubSubEngine,
   ) {}
@@ -32,12 +34,16 @@ export class LocationsResolver {
   @Mutation(returns => Location, { name: 'createLocation' })
   async createLocation(
     @Args('input') createLocationData: CreateLocationInput,
-    @GqlUser() user: User,
+    @GqlUser() gqlUser: User,
   ) {
+    const organization = await this.organizationsService.findOne(
+      createLocationData.organizationId.toString(),
+    );
     const location = new Location();
     location.name = createLocationData.name;
-    location.organizationId = createLocationData.organizationId.toString();
-    return await this.locationsService.create(location, user);
+    location.organization = organization;
+    location.createdBy = gqlUser.id;
+    return await this.locationsService.create(location);
   }
 
   @UseGuards(GqlAuthGuard)

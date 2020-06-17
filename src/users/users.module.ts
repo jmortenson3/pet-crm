@@ -5,14 +5,16 @@ import { UsersService } from './users.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersResolver } from './users.resolver';
 import { PetsModule } from 'src/pets/pets.module';
+import { MembershipsService } from './memberships.service';
+import { Membership } from './models/membership.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Membership]),
     forwardRef(() => AuthModule),
     forwardRef(() => PetsModule),
   ],
-  providers: [UsersService, UsersResolver],
-  exports: [UsersService],
+  providers: [UsersService, UsersResolver, MembershipsService],
+  exports: [UsersService, MembershipsService],
 })
 export class UsersModule {}

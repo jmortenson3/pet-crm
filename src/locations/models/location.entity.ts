@@ -1,19 +1,26 @@
-import { Entity, ObjectIdColumn, ObjectID, Column } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base-entity.model';
+import { Organization } from 'src/organizations/models/organization.entity';
+import { Membership } from 'src/users/models/membership.entity';
 
 @Entity()
 @ObjectType()
 export class Location extends BaseEntity {
-  @ObjectIdColumn()
-  @Field(type => String)
-  id: ObjectID;
-
-  @Column()
+  @PrimaryGeneratedColumn('uuid')
   @Field()
-  organizationId: string;
+  id: string;
 
   @Column()
   @Field()
   name: string;
+
+  @ManyToOne(type => Organization)
+  organization: Organization;
 }
