@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Location } from './models/location.entity';
 import { User } from 'src/users/models/user.entity';
 import { OrganizationsService } from 'src/organizations/organizations.service';
+import { Organization } from 'src/organizations/models/organization.entity';
 
 @Injectable()
 export class LocationsService {
@@ -25,6 +26,16 @@ export class LocationsService {
 
   findAll(filters?: any): Promise<Location[]> {
     return this.locationRepository.find(filters);
+  }
+
+  findByOrganization(organization: Organization): Promise<Location[]> {
+    return this.locationRepository
+      .createQueryBuilder('locations')
+      .innerJoin('locations.organization', 'organization')
+      .where('organization.id = :organizationId', {
+        organizationId: organization.id,
+      })
+      .getMany();
   }
 
   findOne(id: string): Promise<Location> {

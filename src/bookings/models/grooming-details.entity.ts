@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BookingDetails } from './booking-details.entity';
-import { GroomingOptions } from './grooming-options.entitiy';
 
 @Entity()
 @ObjectType()

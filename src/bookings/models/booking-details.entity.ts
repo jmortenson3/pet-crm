@@ -1,12 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from 'src/common/base-entity.model';
-import {
-  PrimaryGeneratedColumn,
-  Entity,
-  ManyToOne,
-  JoinColumn,
-  Column,
-} from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, ManyToOne, Column } from 'typeorm';
 import { Pet } from 'src/pets/models/pet.entity';
 import { Booking } from './booking.entity';
 
@@ -25,9 +19,9 @@ export class BookingDetails extends BaseEntity {
 
   @Column({ default: false })
   @Field()
-  isBoarding: Boolean;
+  isBoarding: boolean;
 
   @Column({ default: false })
   @Field()
-  isGrooming: Boolean;
+  isGrooming: boolean;
 }
