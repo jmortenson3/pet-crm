@@ -4,9 +4,14 @@ import { Pet } from './models/pet.entity';
 import { UsersModule } from 'src/users/users.module';
 import { PetsService } from './pets.service';
 import { PetsResolver } from './pets.resolver';
+import { BookingsModule } from 'src/bookings/bookings.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Pet]), forwardRef(() => UsersModule)],
+  imports: [
+    TypeOrmModule.forFeature([Pet]),
+    forwardRef(() => UsersModule),
+    forwardRef(() => BookingsModule),
+  ],
   providers: [PetsService, PetsResolver],
   exports: [PetsService],
 })

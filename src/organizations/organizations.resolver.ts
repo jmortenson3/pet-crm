@@ -22,7 +22,7 @@ import { GetOrganizationByIdInput } from './models/get-organization-by-id.input'
 import { UpdateOrganizationInput } from './models/update-organization.input';
 import { LocationsService } from 'src/locations/locations.service';
 import { Location } from 'src/locations/models/location.entity';
-import { Booking } from 'src/bookings/models/booking.entity';
+import { Booking } from 'src/bookings/models/entities/booking.entity';
 import { BookingsService } from 'src/bookings/bookings.service';
 import { UsersService } from 'src/users/users.service';
 import { MembershipsService } from 'src/users/memberships.service';

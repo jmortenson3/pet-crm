@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { ObjectID } from 'typeorm';
+import { CreateBookingDetailsInput } from './create-booking-details.input';
 
 @InputType()
 export class CreateBookingInput {
@@ -14,4 +15,7 @@ export class CreateBookingInput {
 
   @Field()
   pickupDate: string;
+
+  @Field(type => [CreateBookingDetailsInput])
+  bookingDetails: CreateBookingDetailsInput[];
 }

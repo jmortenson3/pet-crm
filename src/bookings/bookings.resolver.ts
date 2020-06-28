@@ -1,27 +1,39 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { BookingsService } from './bookings.service';
 import { UseGuards, Inject } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
-import { CreateBookingInput } from './models/create-booking.input';
+import { CreateBookingInput } from './models/inputs/create-booking.input';
 import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
-import { Booking, BookingStatus } from './models/booking.entity';
-import { GetBookingByIdInput } from './models/get-booking-by-id.input';
-import { AcceptBookingInput } from './models/accept-booking.input';
-import { DenyBookingInput } from './models/deny-booking.input';
+import { Booking, BookingStatus } from './models/entities/booking.entity';
+import { GetBookingByIdInput } from './models/inputs/get-booking-by-id.input';
+import { AcceptBookingInput } from './models/inputs/accept-booking.input';
+import { DenyBookingInput } from './models/inputs/deny-booking.input';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { EVENTS } from 'src/events';
 import { UsersService } from 'src/users/users.service';
 import { OrganizationsService } from 'src/organizations/organizations.service';
 import { LocationsService } from 'src/locations/locations.service';
+import { BookingDetails } from './models/entities/booking-details.entity';
+import { BoardingDetails } from './models/entities/boarding-details.entity';
+import { GroomingDetails } from './models/entities/grooming-details.entity';
+import { PetsService } from 'src/pets/pets.service';
 
-@Resolver()
+@Resolver(of => Booking)
 export class BookingsResolver {
   constructor(
     private readonly bookingsService: BookingsService,
     private readonly usersService: UsersService,
     private readonly organizationsService: OrganizationsService,
     private readonly locationsService: LocationsService,
+    private readonly petsService: PetsService,
     @Inject('PUB_SUB') private readonly pubSub: PubSubEngine,
   ) {}
 
@@ -46,6 +58,28 @@ export class BookingsResolver {
     booking.dropoffDate = createBookingData.dropoffDate;
     booking.createdBy = user.id.toString();
     booking.bookingStatus = BookingStatus.REQUESTED;
+
+    booking.bookingDetails = [];
+
+    for (const details of createBookingData.bookingDetails) {
+      const bookingDetails = new BookingDetails();
+      const pet = await this.petsService.findOne(details.petId.toString());
+      bookingDetails.pet = pet;
+
+      if (details.boardingDetails) {
+        const boardingDetails = new BoardingDetails();
+        boardingDetails.customerNotes = details.boardingDetails.customerNotes;
+        bookingDetails.boardingDetails = boardingDetails;
+      }
+
+      if (details.groomingDetails) {
+        const groomingDetails = new GroomingDetails();
+        groomingDetails.customerNotes = details.groomingDetails.customerNotes;
+        bookingDetails.groomingDetails = groomingDetails;
+      }
+
+      booking.bookingDetails.push(bookingDetails);
+    }
 
     const createdBooking = await this.bookingsService.create(booking);
     this.pubSub.publish(EVENTS.BOOKING_REQUESTED, {
@@ -93,5 +127,11 @@ export class BookingsResolver {
   @Query(returns => [Booking], { name: 'allBookings' })
   async getBookings() {
     return await this.bookingsService.findAll();
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField('bookingDetails', returns => [BookingDetails])
+  async getBookingDetails(@Parent() booking: Booking) {
+    return await this.bookingsService.findBookingDetails(booking);
   }
 }
