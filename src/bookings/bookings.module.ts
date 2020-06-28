@@ -21,7 +21,7 @@ import { BookingDetailsResolver } from './book-details.resolver';
       GroomingDetails,
     ]),
     PubSubModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
     forwardRef(() => OrganizationsModule),
     forwardRef(() => LocationsModule),
   ],
