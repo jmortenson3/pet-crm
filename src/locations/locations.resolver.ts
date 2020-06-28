@@ -16,7 +16,7 @@ import { GqlUser } from 'src/common/decorators/gql-user.decorator';
 import { User } from 'src/users/models/user.entity';
 import { CreateLocationInput } from './models/create-location.input';
 import { BookingsService } from 'src/bookings/bookings.service';
-import { Booking } from 'src/bookings/models/booking.entity';
+import { Booking } from 'src/bookings/models/entities/booking.entity';
 import { GetLocationByIdInput } from './models/get-location-by-id.input';
 import { EVENTS } from 'src/events';
 import { OrganizationsService } from 'src/organizations/organizations.service';

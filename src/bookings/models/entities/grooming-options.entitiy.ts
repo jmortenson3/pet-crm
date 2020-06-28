@@ -1,11 +1,11 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, OneToOne } from 'typeorm';
 import { GroomingDetails } from './grooming-details.entity';
 
 @ObjectType()
 @Entity()
 export class GroomingOptions {
-  @ManyToOne(type => GroomingDetails)
+  @OneToOne(type => GroomingDetails)
   groomingDetails: GroomingDetails;
 
   @Column({ nullable: true })
