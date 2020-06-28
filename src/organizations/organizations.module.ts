@@ -12,7 +12,7 @@ import { UsersModule } from 'src/users/users.module';
     TypeOrmModule.forFeature([Organization]),
     forwardRef(() => LocationsModule),
     forwardRef(() => BookingsModule),
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   providers: [OrganizationsService, OrganizationsResolver],
   exports: [OrganizationsService],

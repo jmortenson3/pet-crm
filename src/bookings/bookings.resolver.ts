@@ -24,6 +24,7 @@ import { LocationsService } from 'src/locations/locations.service';
 import { BookingDetails } from './models/entities/booking-details.entity';
 import { BoardingDetails } from './models/entities/boarding-details.entity';
 import { GroomingDetails } from './models/entities/grooming-details.entity';
+import { PetsService } from 'src/pets/pets.service';
 
 @Resolver(of => Booking)
 export class BookingsResolver {
@@ -32,6 +33,7 @@ export class BookingsResolver {
     private readonly usersService: UsersService,
     private readonly organizationsService: OrganizationsService,
     private readonly locationsService: LocationsService,
+    private readonly petsService: PetsService,
     @Inject('PUB_SUB') private readonly pubSub: PubSubEngine,
   ) {}
 
@@ -59,8 +61,10 @@ export class BookingsResolver {
 
     booking.bookingDetails = [];
 
-    createBookingData.bookingDetails.forEach(details => {
+    for (const details of createBookingData.bookingDetails) {
       const bookingDetails = new BookingDetails();
+      const pet = await this.petsService.findOne(details.petId.toString());
+      bookingDetails.pet = pet;
 
       if (details.boardingDetails) {
         const boardingDetails = new BoardingDetails();
@@ -75,7 +79,7 @@ export class BookingsResolver {
       }
 
       booking.bookingDetails.push(bookingDetails);
-    });
+    }
 
     const createdBooking = await this.bookingsService.create(booking);
     this.pubSub.publish(EVENTS.BOOKING_REQUESTED, {

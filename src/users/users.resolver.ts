@@ -31,7 +31,7 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   @ResolveField('pets', returns => [Pet])
   async pets(@Parent() user: User) {
-    return await this.petsService.findAll({ userId: user.id.toString() });
+    return await this.petsService.findByUser(user);
   }
 
   @UseGuards(GqlAuthGuard)

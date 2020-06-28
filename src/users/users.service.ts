@@ -28,8 +28,8 @@ export class UsersService {
 
   findByOrganization(organization: Organization): Promise<User[]> {
     return this.usersRepository
-      .createQueryBuilder('user')
-      .innerJoin('user.memberships', 'membership')
+      .createQueryBuilder('users')
+      .innerJoin('users.memberships', 'membership')
       .where('membership.organization = :organization', {
         organization: organization.id,
       })

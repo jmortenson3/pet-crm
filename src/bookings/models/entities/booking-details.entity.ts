@@ -6,6 +6,7 @@ import {
   ManyToOne,
   Column,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Pet } from 'src/pets/models/pet.entity';
 import { Booking } from './booking.entity';
@@ -28,6 +29,7 @@ export class BookingDetails extends BaseEntity {
   booking: Booking;
 
   @ManyToOne(type => Pet)
+  @JoinColumn()
   pet: Pet;
 
   @OneToOne(

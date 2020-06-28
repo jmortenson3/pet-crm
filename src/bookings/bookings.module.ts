@@ -11,6 +11,7 @@ import { BookingDetails } from './models/entities/booking-details.entity';
 import { BoardingDetails } from './models/entities/boarding-details.entity';
 import { GroomingDetails } from './models/entities/grooming-details.entity';
 import { BookingDetailsResolver } from './book-details.resolver';
+import { PetsModule } from 'src/pets/pets.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BookingDetailsResolver } from './book-details.resolver';
     forwardRef(() => UsersModule),
     forwardRef(() => OrganizationsModule),
     forwardRef(() => LocationsModule),
+    forwardRef(() => PetsModule),
   ],
   providers: [BookingsService, BookingsResolver, BookingDetailsResolver],
   exports: [BookingsService],
