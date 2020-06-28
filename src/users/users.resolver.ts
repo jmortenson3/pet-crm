@@ -5,12 +5,15 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { Pet } from 'src/pets/models/pet.entity';
 import { PetsService } from 'src/pets/pets.service';
+import { Booking } from 'src/bookings/models/entities/booking.entity';
+import { BookingsService } from 'src/bookings/bookings.service';
 
 @Resolver(of => User)
 export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly petsService: PetsService,
+    private readonly bookingsService: BookingsService,
   ) {}
 
   @UseGuards(GqlAuthGuard)
@@ -29,5 +32,11 @@ export class UsersResolver {
   @ResolveField('pets', returns => [Pet])
   async pets(@Parent() user: User) {
     return await this.petsService.findAll({ userId: user.id.toString() });
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @ResolveField('bookings', returns => [Booking])
+  async bookings(@Parent() user: User) {
+    return await this.bookingsService.findByUser(user);
   }
 }

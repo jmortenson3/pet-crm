@@ -7,6 +7,7 @@ import { Location } from 'src/locations/models/location.entity';
 import { BookingDetails } from './models/entities/booking-details.entity';
 import { BoardingDetails } from './models/entities/boarding-details.entity';
 import { GroomingDetails } from './models/entities/grooming-details.entity';
+import { User } from 'src/users/models/user.entity';
 
 @Injectable()
 export class BookingsService {
@@ -99,5 +100,15 @@ export class BookingsService {
         bookingDetails: bookingDetails.id,
       })
       .getOne();
+  }
+
+  findByUser(user: User): Promise<Booking[]> {
+    return this.bookingRepository
+      .createQueryBuilder('booking')
+      .innerJoin('booking.user', 'user')
+      .where('booking.user = :user', {
+        user: user.id,
+      })
+      .getMany();
   }
 }
